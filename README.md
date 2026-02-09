@@ -6,14 +6,14 @@ Automatically detects the desktop environment and uses the appropriate method to
 
 ## Supported Environments
 
-| Environment | Method |
-|---|---|
-| GNOME Wayland | `gsettings` (MRU sources) |
-| KDE Plasma Wayland | `qdbus` / `gdbus` |
-| Sway | `swaymsg` + `jq` |
-| Hyprland | `hyprctl` + `jq` |
-| X11 (any DE) | `xkb-switch` / `xkblayout-state` / `setxkbmap` |
-| macOS | `defaults read` (HIToolbox) |
+| Environment        | Method                                         |
+| ------------------ | ---------------------------------------------- |
+| GNOME Wayland      | `gsettings` (MRU sources)                      |
+| KDE Plasma Wayland | `qdbus` / `gdbus`                              |
+| Sway               | `swaymsg` + `jq`                               |
+| Hyprland           | `hyprctl` + `jq`                               |
+| X11 (any DE)       | `xkb-switch` / `xkblayout-state` / `setxkbmap` |
+| macOS              | `defaults read` (HIToolbox)                    |
 
 ## Installation
 
@@ -22,7 +22,7 @@ Automatically detects the desktop environment and uses the appropriate method to
 Add the plugin to your `tmux.conf`:
 
 ```tmux
-set -g @plugin 'rastler/kbd-layout-status'
+set -g @plugin 'romanaverin/kbd-layout-status'
 ```
 
 Press `prefix + I` to install.
@@ -30,7 +30,7 @@ Press `prefix + I` to install.
 ### Manual
 
 ```bash
-git clone https://github.com/rastler/kbd-layout-status ~/.config/tmux/plugins/kbd-layout-status
+git clone https://github.com/romanaverin/kbd-layout-status ~/.config/tmux/plugins/kbd-layout-status
 ```
 
 Add to `tmux.conf`:
