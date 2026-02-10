@@ -48,6 +48,7 @@ set -g status-right "#{kbd_layout}"
 ```
 
 The placeholder will be replaced with the script call when the plugin loads.
+If you have a color scheme and it is in a separate file, then that is where you need to place the configuration.
 
 ## Configuration
 
