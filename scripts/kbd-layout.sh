@@ -17,8 +17,13 @@ set -uo pipefail
 
 # GNOME on Wayland (Mutter) — Fedora, Ubuntu, etc.
 get_layout_gnome_wayland() {
-  gsettings get org.gnome.desktop.input-sources mru-sources |
-    grep -oP "'[^']+'" | sed -n '2p' | tr -d "'"
+  local idx
+  idx=$(gsettings get org.gnome.desktop.input-sources current 2>/dev/null |
+    grep -oP 'uint32 \K\d+')
+  [[ -z "$idx" ]] && return
+
+  gsettings get org.gnome.desktop.input-sources sources 2>/dev/null |
+    grep -oP "'[^']+'" | sed -n "$((idx * 2 + 2))p" | tr -d "'"
 }
 
 # KDE Plasma on Wayland
