@@ -17,13 +17,19 @@ set -uo pipefail
 
 # GNOME on Wayland (Mutter) — Fedora, Ubuntu, etc.
 get_layout_gnome_wayland() {
-  local idx
-  idx=$(gsettings get org.gnome.desktop.input-sources current 2>/dev/null |
-    grep -oP 'uint32 \K\d+')
-  [[ -z "$idx" ]] && return
+  # mru-sources contains the current layout as the first element (Most Recently Used)
+  local layout
+  layout=$(gsettings get org.gnome.desktop.input-sources mru-sources 2>/dev/null |
+    grep -oP "'[^']+'" | sed -n '2p' | tr -d "'")
 
-  gsettings get org.gnome.desktop.input-sources sources 2>/dev/null |
-    grep -oP "'[^']+'" | sed -n "$((idx * 2 + 2))p" | tr -d "'"
+  # Fallback: if mru-sources is empty (initial GNOME state),
+  # take the first element from sources
+  if [[ -z "$layout" ]]; then
+    layout=$(gsettings get org.gnome.desktop.input-sources sources 2>/dev/null |
+      grep -oP "'[^']+'" | sed -n '2p' | tr -d "'")
+  fi
+
+  echo "$layout"
 }
 
 # KDE Plasma on Wayland
