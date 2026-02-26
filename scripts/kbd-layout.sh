@@ -17,13 +17,23 @@ set -uo pipefail
 
 # GNOME on Wayland (Mutter) — Fedora, Ubuntu, etc.
 get_layout_gnome_wayland() {
-  # mru-sources contains the current layout as the first element (Most Recently Used)
   local layout
-  layout=$(gsettings get org.gnome.desktop.input-sources mru-sources 2>/dev/null |
-    grep -oP "'[^']+'" | sed -n '2p' | tr -d "'")
 
-  # Fallback: if mru-sources is empty (initial GNOME state),
-  # take the first element from sources
+  # Primary: setxkbmap via XWayland — always shows the actual current layout.
+  # On GNOME Wayland, Mutter sets XWayland's keyboard to only the active layout,
+  # so this reliably returns the correct layout even right after session start
+  # (unlike mru-sources which may retain stale data from the previous session).
+  if [[ -n "${DISPLAY:-}" ]] && command -v setxkbmap &>/dev/null; then
+    layout=$(setxkbmap -query 2>/dev/null | awk '/layout/{print $2}' | cut -d',' -f1)
+  fi
+
+  # Fallback 1: mru-sources (works at runtime but may be stale on startup)
+  if [[ -z "$layout" ]]; then
+    layout=$(gsettings get org.gnome.desktop.input-sources mru-sources 2>/dev/null |
+      grep -oP "'[^']+'" | sed -n '2p' | tr -d "'")
+  fi
+
+  # Fallback 2: sources (initial GNOME state when mru-sources is empty)
   if [[ -z "$layout" ]]; then
     layout=$(gsettings get org.gnome.desktop.input-sources sources 2>/dev/null |
       grep -oP "'[^']+'" | sed -n '2p' | tr -d "'")

@@ -8,7 +8,7 @@ Automatically detects the desktop environment and uses the appropriate method to
 
 | Environment        | Method                                         |
 | ------------------ | ---------------------------------------------- |
-| GNOME Wayland      | `gsettings` (MRU sources)                      |
+| GNOME Wayland      | `setxkbmap` (XWayland) / `gsettings` (fallback) |
 | KDE Plasma Wayland | `qdbus` / `gdbus`                              |
 | Sway               | `swaymsg` + `jq`                               |
 | Hyprland           | `hyprctl` + `jq`                               |
@@ -68,7 +68,7 @@ If not set, the raw layout value is displayed.
 
 The plugin requires tools specific to your environment:
 
-- **GNOME Wayland**: `gsettings` (usually pre-installed)
+- **GNOME Wayland**: `setxkbmap` (usually pre-installed), `gsettings` (fallback)
 - **KDE Wayland**: `qdbus` or `gdbus`
 - **Sway**: `swaymsg`, `jq`
 - **Hyprland**: `hyprctl`, `jq`
