@@ -16,15 +16,17 @@ set -uo pipefail
 # ─── Layout detection functions per environment ──────────────────
 
 # GNOME on Wayland (Mutter) — Fedora, Ubuntu, etc.
+# Requires: ibus (usually pre-installed), gsettings (fallback)
 get_layout_gnome_wayland() {
-  local layout
+  local layout=""
 
-  # Primary: setxkbmap via XWayland — always shows the actual current layout.
-  # On GNOME Wayland, Mutter sets XWayland's keyboard to only the active layout,
-  # so this reliably returns the correct layout even right after session start
-  # (unlike mru-sources which may retain stale data from the previous session).
-  if [[ -n "${DISPLAY:-}" ]] && command -v setxkbmap &>/dev/null; then
-    layout=$(setxkbmap -query 2>/dev/null | awk '/layout/{print $2}' | cut -d',' -f1)
+  # Primary: ibus engine — queries the IBus daemon for the active input engine.
+  # IBus is always running on GNOME (gnome-shell depends on it).
+  # Unlike gsettings mru-sources, this always returns the actual current layout,
+  # even right after session start (mru-sources may retain stale data).
+  # Output format: "xkb:ru::rus" → extract "ru" via cut.
+  if command -v ibus &>/dev/null; then
+    layout=$(ibus engine 2>/dev/null | cut -d: -f2)
   fi
 
   # Fallback 1: mru-sources (works at runtime but may be stale on startup)
